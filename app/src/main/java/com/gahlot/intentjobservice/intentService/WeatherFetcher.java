@@ -70,4 +70,43 @@ public class WeatherFetcher {
 
         return coord;
     }
+
+    public ArrayList<String> makeCitySpecificRequest(String cityName) throws IOException {
+        ArrayList<String> coord = new ArrayList<>();
+        URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=metric&appid=f2505a1aa5e4f87eb13d9a1c087208e1");
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        con.setRequestMethod("GET");
+        con.setDoOutput(true);
+        con.connect();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line + "\n");
+        }
+        br.close();
+        String jsonString = sb.toString();
+        JSONArray jsonArray = null;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = new JSONObject(jsonString);
+            JSONObject json = new JSONObject(jsonObject.getString("main"));
+            //for (int i=0; i<jsonArray.length(); i++) {
+            //jsonObject = jsonArray.getJSONObject(i);
+            coord.add(cityName);
+            coord.add(json.getString("temp"));
+            coord.add(json.getString("feels_like"));
+            coord.add(json.getString("temp_min"));
+            coord.add(json.getString("temp_max"));
+            coord.add(json.getString("humidity"));
+            Log.i(TAG, "makeRequest: " + coord);
+            //}
+            jsonObject = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return coord;
+    }
 }

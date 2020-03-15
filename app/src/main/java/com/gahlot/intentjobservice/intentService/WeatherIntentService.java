@@ -31,7 +31,6 @@ public class WeatherIntentService extends IntentService {
             }
 
             quote = weatherFetcher.makeRequest();
-            Log.i(TAG, "onHandleIntent: " + quote);
             Bundle bundle = new Bundle();
             bundle.putStringArrayList("compValue", quote);
             myResultReceiver.send(100,bundle);
